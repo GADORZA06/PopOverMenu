@@ -26,7 +26,7 @@ open class PopOverViewController: UITableViewController, UIAdaptivePresentationC
 
     fileprivate var descriptions:Array<String>?
     @objc open var completionHandler: ((_ selectRow: Int) -> Void)?
-    fileprivate var selectRow:Int?
+    fileprivate var selectedRows:Set<Int> = Set<Int>()
     
     fileprivate var separ:Int?
     
@@ -93,11 +93,6 @@ open class PopOverViewController: UITableViewController, UIAdaptivePresentationC
         super.viewWillAppear(animated)
         
         tableView.reloadData()
-        
-        if (selectRow != nil) {
-            let selectIndexPath:IndexPath = IndexPath(row: selectRow!, section: 0)
-            tableView.scrollToRow(at: selectIndexPath, at: .middle, animated: true)
-        }
     }
     
     override open func viewDidAppear(_ animated: Bool) {
@@ -162,7 +157,7 @@ open class PopOverViewController: UITableViewController, UIAdaptivePresentationC
             }
         }
         
-        if (selectRow == nil || selectRow != indexPath.row) {
+        if !selectedRows.contains(indexPath.row) {
             cell.textLabel?.textColor = titleColor
             if indexPath.row < imageNames.count, let imageName = imageNames[indexPath.row] {
                 cell.imageView?.image = UIImage(named: imageName)
@@ -218,16 +213,33 @@ open class PopOverViewController: UITableViewController, UIAdaptivePresentationC
     
     @objc open func setSelectedTitleColor(_ color:UIColor) {
         self.selectedTitleColor = color
-        if let row = selectRow {
-            tableView.reloadRows(at: [IndexPath(row: row, section: 0)], with: .automatic)
-        }
+        let sr = selectedRows.map({ (row) -> IndexPath in
+            return IndexPath(row: row, section: 0)
+        })
+        tableView.reloadRows(at: sr, with: .automatic)
     }
     
     @objc open func setSelectRow(_ selectRow:Int) {
-        self.selectRow = selectRow
-        tableView.reloadRows(at: [IndexPath(row: selectRow, section: 0)], with: .automatic)
+        deselectRows(selectedRows)
+        selectRows([selectRow])
     }
     
+    @objc open func selectRows(_ rows: Set<Int>) {
+        selectedRows.formUnion(rows)
+        let sr = selectedRows.map({ (row) -> IndexPath in
+            return IndexPath(row: row, section: 0)
+        })
+        tableView.reloadRows(at: sr, with: .automatic)
+    }
+
+    @objc open func deselectRows(_ rows: Set<Int>) {
+        selectedRows.subtract(rows)
+        let sr = selectedRows.map({ (row) -> IndexPath in
+            return IndexPath(row: row, section: 0)
+        })
+        tableView.reloadRows(at: sr, with: .automatic)
+    }
+
     @objc open func setSeparatorStyle(_ separatorStyle:UITableViewCellSeparatorStyle) {
         self.separatorStyle = separatorStyle
     }
