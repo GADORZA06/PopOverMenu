@@ -7,6 +7,12 @@ import Foundation
 open class PopOverViewController: UITableViewController, UIAdaptivePresentationControllerDelegate, UIPopoverPresentationControllerDelegate {
     
     fileprivate var titles:Array<String> = []
+    fileprivate var imageNames:Array<String?> = []
+    fileprivate var selectedImageNames:Array<String?> = []
+    
+    fileprivate var titleColor:UIColor = UIColor.black
+    fileprivate var selectedTitleColor:UIColor = UIColor.black
+
     fileprivate var descriptions:Array<String>?
     @objc open var completionHandler: ((_ selectRow: Int) -> Void)?
     fileprivate var selectRow:Int?
@@ -140,10 +146,26 @@ open class PopOverViewController: UITableViewController, UIAdaptivePresentationC
             }
         }
         
-        if (selectRow == nil) {
+        if (selectRow == nil || selectRow != indexPath.row) {
+            cell.textLabel?.textColor = titleColor
+            if indexPath.row < imageNames.count, let imageName = imageNames[indexPath.row] {
+                cell.imageView?.image = UIImage(named: imageName)
+            } else {
+                cell.imageView?.image = nil
+            }
             cell.accessoryType = UITableViewCellAccessoryType.none
         } else {
-            cell.accessoryType = selectRow == indexPath.row ? UITableViewCellAccessoryType.checkmark : UITableViewCellAccessoryType.none
+            cell.textLabel?.textColor = selectedTitleColor
+            if indexPath.row < selectedImageNames.count, let imageName = selectedImageNames[indexPath.row] {
+                cell.imageView?.image = UIImage(named: imageName)
+                cell.accessoryType = UITableViewCellAccessoryType.none
+            } else if indexPath.row < imageNames.count, let imageName = imageNames[indexPath.row] {
+                cell.imageView?.image = UIImage(named: imageName)
+                cell.accessoryType = UITableViewCellAccessoryType.none
+            } else {
+                cell.imageView?.image = nil
+                cell.accessoryType = UITableViewCellAccessoryType.checkmark
+            }
         }
 
         return cell
@@ -153,12 +175,41 @@ open class PopOverViewController: UITableViewController, UIAdaptivePresentationC
         self.titles = titles
     }
     
+    @objc open func setImageNames(_ imageNames:Array<String>) {
+        self.imageNames = imageNames
+    }
+
+    open func setImageNames(_ imageNames:Array<String?>) {
+        self.imageNames = imageNames
+    }
+    
+    @objc open func setSelectedImageNames(_ imageNames:Array<String>) {
+        self.selectedImageNames = imageNames
+    }
+    
+    open func setSelectedImageNames(_ imageNames:Array<String?>) {
+        self.selectedImageNames = imageNames
+    }
+    
     @objc open func setDescriptions(_ descriptions:Array<String>) {
         self.descriptions = descriptions
     }
     
+    @objc open func setTitleColor(_ color:UIColor) {
+        self.titleColor = color
+        tableView.reloadData()
+    }
+    
+    @objc open func setSelectedTitleColor(_ color:UIColor) {
+        self.selectedTitleColor = color
+        if let row = selectRow {
+            tableView.reloadRows(at: [IndexPath(row: row, section: 0)], with: .automatic)
+        }
+    }
+    
     @objc open func setSelectRow(_ selectRow:Int) {
         self.selectRow = selectRow
+        tableView.reloadRows(at: [IndexPath(row: selectRow, section: 0)], with: .automatic)
     }
     
     @objc open func setSeparatorStyle(_ separatorStyle:UITableViewCellSeparatorStyle) {

@@ -11,6 +11,7 @@ import PopOverMenuComponent
 
 class ViewController: UIViewController {
     let button = UIButton()
+    var selectRow: Int? = nil
     override func viewDidLoad() {
         super.viewDidLoad()
         button.setTitle("Press Me", for: UIControlState.normal)
@@ -26,6 +27,16 @@ class ViewController: UIViewController {
         let popup = PopOverViewController.instantiate(withSourceView: button)
         
         popup.setTitles(["Bob", "Ray", "Charlie", "Alpha", "Delta"])
+        if let row = selectRow {
+            popup.setSelectRow(row)
+        }
+        popup.setImageNames(["location", "location", "location", "location", "location"])
+        popup.setSelectedImageNames(["play", "play", "play", "play", "play"])
+        popup.setTitleColor(UIColor.blue)
+        popup.setSelectedTitleColor(UIColor.red)
+        popup.completionHandler = { [unowned self] (selectRow: Int) in
+            self.selectRow = selectRow
+        }
         
         present(popup, animated: true, completion: nil)
 
