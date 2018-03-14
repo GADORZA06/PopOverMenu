@@ -4,7 +4,7 @@
 
 import Foundation
 
-open class PopOverViewController: UITableViewController, UIAdaptivePresentationControllerDelegate {
+open class PopOverViewController: UITableViewController, UIAdaptivePresentationControllerDelegate, UIPopoverPresentationControllerDelegate {
     
     fileprivate var titles:Array<String> = []
     fileprivate var descriptions:Array<String>?
@@ -16,7 +16,7 @@ open class PopOverViewController: UITableViewController, UIAdaptivePresentationC
     fileprivate var separatorStyle: UITableViewCellSeparatorStyle = UITableViewCellSeparatorStyle.none
     fileprivate var showsVerticalScrollIndicator:Bool = false
     
-    @objc open static func instantiate() -> PopOverViewController {
+    @objc open static func instantiateFromStoryboard() -> PopOverViewController {
         let storyboardsBundle = getStoryboardsBundle()
         let storyboard:UIStoryboard = UIStoryboard(name: "PopOver", bundle: storyboardsBundle)
         let popOverViewController:PopOverViewController = storyboard.instantiateViewController(withIdentifier: "PopOverViewController") as! PopOverViewController
@@ -27,11 +27,40 @@ open class PopOverViewController: UITableViewController, UIAdaptivePresentationC
         // arrow color
         popOverViewController.popoverPresentationController?.backgroundColor = UIColor.white
         
+        popOverViewController.popoverPresentationController?.delegate = popOverViewController
+
         return popOverViewController
     }
     
+    open static func instantiate(withSourceView sourceView: UIView) -> PopOverViewController {
+        let popOverViewController = PopOverViewController()
+        
+        popOverViewController.modalPresentationStyle = .popover
+        popOverViewController.popoverPresentationController?.sourceView = sourceView
+        popOverViewController.popoverPresentationController?.permittedArrowDirections = UIPopoverArrowDirection()
+        popOverViewController.presentationController?.delegate = popOverViewController
+        
+        return popOverViewController
+    }
+    
+    open static func instantiate(withBarButtonItem barButtonItem: UIBarButtonItem) -> PopOverViewController {
+        let popOverViewController = PopOverViewController()
+        
+        popOverViewController.modalPresentationStyle = .popover
+        popOverViewController.popoverPresentationController?.barButtonItem = barButtonItem
+        popOverViewController.popoverPresentationController?.permittedArrowDirections = UIPopoverArrowDirection()
+        popOverViewController.presentationController?.delegate = popOverViewController
+        
+        return popOverViewController
+    }
+
+    
     override open func viewDidLoad() {
         super.viewDidLoad()
+        
+        self.view.frame = CGRect(x: 0, y: 0, width: 230, height: CGFloat(titles.count*44));
+        self.preferredContentSize = CGSize(width: 230, height: CGFloat(titles.count*44));
+
         
         tableView.rowHeight = UITableViewAutomaticDimension
         tableView.estimatedRowHeight = 45
@@ -80,18 +109,33 @@ open class PopOverViewController: UITableViewController, UIAdaptivePresentationC
         
         // If explanation text is coming, display it in two lines
         if (descriptions == nil) {
-            cell = tableView.dequeueReusableCell(withIdentifier: "SingleTitleCell")!
+            let reuseIdentifier = "SingleTitleCell"
+            if let c = tableView.dequeueReusableCell(withIdentifier: reuseIdentifier) {
+                cell = c
+            } else {
+                cell = UITableViewCell(style: UITableViewCellStyle.default, reuseIdentifier: reuseIdentifier)
+            }
             cell.textLabel?.text = title
         } else {
             let description:String? = descriptions?[indexPath.row]
 
             if (description?.count)! > 0 {
-                cell = tableView.dequeueReusableCell(withIdentifier: "SubTitleCell")!
-                
+                let reuseIdentifier = "SubTitleCell"
+                if let c = tableView.dequeueReusableCell(withIdentifier: reuseIdentifier) {
+                    cell = c
+                } else {
+                    cell = UITableViewCell(style: UITableViewCellStyle.default, reuseIdentifier: reuseIdentifier)
+                }
+
                 cell.textLabel?.text = title
                 cell.detailTextLabel?.text = description
             } else {
-                cell = tableView.dequeueReusableCell(withIdentifier: "SingleTitleCell")!
+                let reuseIdentifier = "SingleTitleCell"
+                if let c = tableView.dequeueReusableCell(withIdentifier: reuseIdentifier) {
+                    cell = c
+                } else {
+                    cell = UITableViewCell(style: UITableViewCellStyle.default, reuseIdentifier: reuseIdentifier)
+                }
                 cell.textLabel?.text = title
             }
         }
@@ -145,5 +189,13 @@ open class PopOverViewController: UITableViewController, UIAdaptivePresentationC
         let bundle = Bundle(url: bundleURL!)!
         
         return bundle
+    }
+    
+    public func adaptivePresentationStyle(for controller: UIPresentationController, traitCollection: UITraitCollection) -> UIModalPresentationStyle {
+        return .none
+    }
+    
+    public func adaptivePresentationStyle(for controller: UIPresentationController) -> UIModalPresentationStyle {
+        return .none
     }
 }
