@@ -38,8 +38,9 @@ class ViewController: UIViewController {
             self.selectRow = selectRow
         }
         
+        popup.cornerRadius = 4
+        
         present(popup, animated: true, completion: nil)
-
     }
 }
 

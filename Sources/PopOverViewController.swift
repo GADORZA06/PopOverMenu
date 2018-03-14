@@ -6,6 +6,17 @@ import Foundation
 
 open class PopOverViewController: UITableViewController, UIAdaptivePresentationControllerDelegate, UIPopoverPresentationControllerDelegate {
     
+    fileprivate var _cornerRadius: CGFloat = 16
+    open var cornerRadius: CGFloat {
+        set {
+            _cornerRadius = newValue
+            view.superview?.layer.cornerRadius = newValue
+        }
+        get {
+            return _cornerRadius
+        }
+    }
+    
     fileprivate var titles:Array<String> = []
     fileprivate var imageNames:Array<String?> = []
     fileprivate var selectedImageNames:Array<String?> = []
@@ -87,6 +98,11 @@ open class PopOverViewController: UITableViewController, UIAdaptivePresentationC
             let selectIndexPath:IndexPath = IndexPath(row: selectRow!, section: 0)
             tableView.scrollToRow(at: selectIndexPath, at: .middle, animated: true)
         }
+    }
+    
+    override open func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        view.superview?.layer.cornerRadius = _cornerRadius
     }
     
     @IBAction func close() {
@@ -220,6 +236,10 @@ open class PopOverViewController: UITableViewController, UIAdaptivePresentationC
         self.showsVerticalScrollIndicator = showsVerticalScrollIndicator
     }
     
+    @objc open func setCornerRadius(_ cornerRadius: CGFloat) {
+        self.cornerRadius = cornerRadius
+    }
+    
     /**
      * didSelectRowAtIndexPath
      */
@@ -250,3 +270,4 @@ open class PopOverViewController: UITableViewController, UIAdaptivePresentationC
         return .none
     }
 }
+
