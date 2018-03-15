@@ -17,6 +17,30 @@ open class PopOverViewController: UITableViewController, UIAdaptivePresentationC
         }
     }
     
+    fileprivate var _width: CGFloat = 230
+    open var width: CGFloat {
+        set {
+            _width = newValue
+            view.frame.size.width = newValue
+            preferredContentSize.width = newValue
+        }
+        get {
+            return _width
+        }
+    }
+    fileprivate var _heightPerItem: CGFloat = 44
+    open var heightPerItem: CGFloat {
+        set {
+            _heightPerItem = newValue
+            view.frame.size.height = CGFloat(titles.count) * newValue
+            preferredContentSize.height = CGFloat(titles.count) * newValue
+            tableView.reloadData()
+        }
+        get {
+            return _heightPerItem
+        }
+    }
+    
     fileprivate var titles:Array<String> = []
     fileprivate var imageNames:Array<String?> = []
     fileprivate var selectedImageNames:Array<String?> = []
@@ -75,8 +99,8 @@ open class PopOverViewController: UITableViewController, UIAdaptivePresentationC
     override open func viewDidLoad() {
         super.viewDidLoad()
         
-        self.view.frame = CGRect(x: 0, y: 0, width: 230, height: CGFloat(titles.count*44));
-        self.preferredContentSize = CGSize(width: 230, height: CGFloat(titles.count*44));
+        self.view.frame = CGRect(x: 0, y: 0, width: width, height: CGFloat(titles.count) * heightPerItem);
+        self.preferredContentSize = CGSize(width: width, height: CGFloat(titles.count) * heightPerItem);
 
         
         tableView.rowHeight = UITableViewAutomaticDimension
@@ -118,6 +142,9 @@ open class PopOverViewController: UITableViewController, UIAdaptivePresentationC
         return titles.count
     }
     
+    override open func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        return _heightPerItem
+    }
     
     override open func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         var cell: UITableViewCell
@@ -184,6 +211,9 @@ open class PopOverViewController: UITableViewController, UIAdaptivePresentationC
     
     @objc open func setTitles(_ titles:Array<String>) {
         self.titles = titles
+        view.frame.size.height = CGFloat(titles.count) * _heightPerItem
+        preferredContentSize.height = CGFloat(titles.count) * _heightPerItem
+        tableView.reloadData()
     }
     
     @objc open func setImageNames(_ imageNames:Array<String>) {

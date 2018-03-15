@@ -43,6 +43,8 @@ class ViewController: UIViewController {
         popup.cornerRadius = 4
         
         present(popup, animated: true, completion: nil)
+        popup.width = 400
+        popup.heightPerItem = 64
     }
 }
 
