@@ -27,6 +27,7 @@ class ViewController: UIViewController {
         let popup = PopOverViewController.instantiate(withSourceView: button)
         
         popup.setTitles(["Bob", "Ray", "Charlie", "Alpha", "Delta"])
+        popup.setDescriptions(["The Man", "The Technician", "The Mascot", "The Beta", "The Big D"])
         popup.selectRows(self.selectedRows)
         popup.setImageNames(["location", "location", "location", "location", "location"])
         popup.setSelectedImageNames(["play", "play", "play", "play", "play"])

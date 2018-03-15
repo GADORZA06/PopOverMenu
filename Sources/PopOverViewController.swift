@@ -152,38 +152,27 @@ open class PopOverViewController: UITableViewController, UIAdaptivePresentationC
         let title:String? = titles[indexPath.row]
         
         // If explanation text is coming, display it in two lines
-        if (descriptions == nil) {
-            let reuseIdentifier = "SingleTitleCell"
-            if let c = tableView.dequeueReusableCell(withIdentifier: reuseIdentifier) {
-                cell = c
-            } else {
-                cell = UITableViewCell(style: UITableViewCellStyle.default, reuseIdentifier: reuseIdentifier)
-            }
-            cell.textLabel?.text = title
+        var reuseIdentifier: String
+        var description:String?
+        var cellStyle: UITableViewCellStyle = .default
+        if let descriptions = descriptions, descriptions.count > indexPath.row, !descriptions[indexPath.row].isEmpty {
+            reuseIdentifier = "SubTitleCell"
+            description = descriptions[indexPath.row]
+            cellStyle = .subtitle
         } else {
-            let description:String? = descriptions?[indexPath.row]
-
-            if (description?.count)! > 0 {
-                let reuseIdentifier = "SubTitleCell"
-                if let c = tableView.dequeueReusableCell(withIdentifier: reuseIdentifier) {
-                    cell = c
-                } else {
-                    cell = UITableViewCell(style: UITableViewCellStyle.default, reuseIdentifier: reuseIdentifier)
-                }
-
-                cell.textLabel?.text = title
-                cell.detailTextLabel?.text = description
-            } else {
-                let reuseIdentifier = "SingleTitleCell"
-                if let c = tableView.dequeueReusableCell(withIdentifier: reuseIdentifier) {
-                    cell = c
-                } else {
-                    cell = UITableViewCell(style: UITableViewCellStyle.default, reuseIdentifier: reuseIdentifier)
-                }
-                cell.textLabel?.text = title
-            }
+            reuseIdentifier = "SingleTitleCell"
         }
-        
+        if let c = tableView.dequeueReusableCell(withIdentifier: reuseIdentifier) {
+            cell = c
+        } else {
+            cell = UITableViewCell(style: cellStyle, reuseIdentifier: reuseIdentifier)
+        }
+
+        cell.textLabel?.text = title
+        if let text = description {
+            cell.detailTextLabel?.text = text
+        }
+
         if !selectedRows.contains(indexPath.row) {
             cell.textLabel?.textColor = titleColor
             if indexPath.row < imageNames.count, let imageName = imageNames[indexPath.row] {
