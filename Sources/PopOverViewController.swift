@@ -191,15 +191,15 @@ open class PopOverViewController: UITableViewController, UIAdaptivePresentationC
             } else {
                 cell.imageView?.image = nil
             }
-            cell.accessoryType = UITableViewCellAccessoryType.none
+            cell.accessoryType = .none
         } else {
             cell.textLabel?.textColor = selectedTitleColor
             if indexPath.row < selectedImageNames.count, let imageName = selectedImageNames[indexPath.row] {
                 cell.imageView?.image = UIImage(named: imageName)
-                cell.accessoryType = UITableViewCellAccessoryType.none
+                cell.accessoryType = .none
             } else if indexPath.row < imageNames.count, let imageName = imageNames[indexPath.row] {
                 cell.imageView?.image = UIImage(named: imageName)
-                cell.accessoryType = UITableViewCellAccessoryType.none
+                cell.accessoryType = .none
             } else {
                 cell.imageView?.image = nil
                 cell.accessoryType = UITableViewCellAccessoryType.checkmark
