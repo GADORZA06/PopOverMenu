@@ -106,7 +106,7 @@ open class PopOverViewController: UITableViewController, UIAdaptivePresentationC
     
     override open func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
-        view.superview?.layer.cornerRadius = _cornerRadius
+        view.superview?.layer.cornerRadius = cornerRadius
     }
     
     @IBAction func close() {
@@ -128,7 +128,7 @@ open class PopOverViewController: UITableViewController, UIAdaptivePresentationC
     }
     
     override open func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        return _heightPerItem
+        return heightPerItem
     }
     
     override open func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -185,8 +185,8 @@ open class PopOverViewController: UITableViewController, UIAdaptivePresentationC
     
     @objc open func setTitles(_ titles:Array<String>) {
         self.titles = titles
-        view.frame.size.height = CGFloat(titles.count) * _heightPerItem
-        preferredContentSize.height = CGFloat(titles.count) * _heightPerItem
+        view.frame.size.height = CGFloat(titles.count) * heightPerItem
+        preferredContentSize.height = CGFloat(titles.count) * heightPerItem
         tableView.reloadData()
     }
     
