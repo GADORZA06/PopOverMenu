@@ -6,38 +6,23 @@ import Foundation
 
 open class PopOverViewController: UITableViewController, UIAdaptivePresentationControllerDelegate, UIPopoverPresentationControllerDelegate {
     
-    fileprivate var _cornerRadius: CGFloat = 16
-    open var cornerRadius: CGFloat {
-        set {
-            _cornerRadius = newValue
-            view.superview?.layer.cornerRadius = newValue
-        }
-        get {
-            return _cornerRadius
+    open var cornerRadius: CGFloat = 16 {
+        didSet {
+            view.superview?.layer.cornerRadius = cornerRadius
         }
     }
     
-    fileprivate var _width: CGFloat = 230
-    open var width: CGFloat {
-        set {
-            _width = newValue
-            view.frame.size.width = newValue
-            preferredContentSize.width = newValue
-        }
-        get {
-            return _width
+    open var width: CGFloat = 230 {
+        didSet {
+            view.frame.size.width = width
+            preferredContentSize.width = width
         }
     }
-    fileprivate var _heightPerItem: CGFloat = 44
-    open var heightPerItem: CGFloat {
-        set {
-            _heightPerItem = newValue
-            view.frame.size.height = CGFloat(titles.count) * newValue
-            preferredContentSize.height = CGFloat(titles.count) * newValue
+    open var heightPerItem: CGFloat = 44{
+        didSet {
+            view.frame.size.height = CGFloat(titles.count) * heightPerItem
+            preferredContentSize.height = CGFloat(titles.count) * heightPerItem
             tableView.reloadData()
-        }
-        get {
-            return _heightPerItem
         }
     }
     
