@@ -6,6 +6,11 @@ import Foundation
 
 open class PopOverViewController: UITableViewController, UIAdaptivePresentationControllerDelegate, UIPopoverPresentationControllerDelegate {
     
+    struct ReuseIdentifier {
+        static let singleTitleCell = "SingleTitleCell"
+        static let subTitleCell = "SubTitleCell"
+    }
+    
     open var cornerRadius: CGFloat = 16 {
         didSet {
             view.superview?.layer.cornerRadius = cornerRadius
@@ -141,11 +146,11 @@ open class PopOverViewController: UITableViewController, UIAdaptivePresentationC
         var description:String?
         var cellStyle: UITableViewCellStyle = .default
         if let descriptions = descriptions, descriptions.count > indexPath.row, !descriptions[indexPath.row].isEmpty {
-            reuseIdentifier = "SubTitleCell"
+            reuseIdentifier = ReuseIdentifier.subTitleCell
             description = descriptions[indexPath.row]
             cellStyle = .subtitle
         } else {
-            reuseIdentifier = "SingleTitleCell"
+            reuseIdentifier = ReuseIdentifier.singleTitleCell
         }
         if let c = tableView.dequeueReusableCell(withIdentifier: reuseIdentifier) {
             cell = c
@@ -154,9 +159,7 @@ open class PopOverViewController: UITableViewController, UIAdaptivePresentationC
         }
 
         cell.textLabel?.text = title
-        if let text = description {
-            cell.detailTextLabel?.text = text
-        }
+        cell.detailTextLabel?.text = description ?? ""
 
         if !selectedRows.contains(indexPath.row) {
             cell.textLabel?.textColor = titleColor
